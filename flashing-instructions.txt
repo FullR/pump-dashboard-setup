@@ -1,0 +1,28 @@
+Power off and unplug all cables and shields from the beaglebone
+Insert the SD card
+Hold the power button next to the ethernet port
+Plug in the beaglebone
+Continue holding until LEDs begin sweeping left and right
+Wait until LEDs all turn off
+Remove SD card
+Power on board
+
+Copy the setup-beaglebone script to the board:
+
+./transfer-setup-script.sh
+
+Connect to the board:
+
+ssh ubuntu@192.168.7.2
+
+Once connected, change the default password
+
+passwd
+
+Switch to super user
+
+sudo su
+
+And run the setup script:
+
+./setup-beaglebone
