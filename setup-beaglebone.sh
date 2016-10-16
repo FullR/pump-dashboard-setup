@@ -1,25 +1,19 @@
 #!/bin/bash
 
-assertRoot() {
-  if [ "$(id -u)" != "0" ]; then
-    echo "This script must be run as root" 1>&2
-    exit 1
-  fi
-}
-
 promptTimezone() {
-  dpkg-reconfigure tzdata
+  sudo dpkg-reconfigure tzdata
 }
 
 enableRootSSH() {
-  sed -i '/PermitRootLogin prohibit-password/c\PermitRootLogin yes' /etc/ssh/sshd_config
+  sudo sed -i '/PermitRootLogin prohibit-password/c\PermitRootLogin yes' /etc/ssh/sshd_config
 }
 
 installNode() {
-  apt-get install build-essential libssl-dev curl git vim -y
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | bash
-  source ~/.bashrc
+  sudo apt-get install build-essential libssl-dev curl git vim -y
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | bash && source ~/.bashrc
+  $HOME/.nvm/nvm.sh
   nvm install stable
+  source ~/.bashrc
 }
 
 installPostgre() {
@@ -34,7 +28,7 @@ setupPumpController() {
   echo "export NODE_ENV=production" >> ~/.bashrc
   # echo 'export PUMP_EMAIL_PASSWORD="email password goes here"' >> ~/.bashrc
   source ~/.bashrc
-  git clone https://github.com/FullR/pump-dashboard
+  git clone https://github.com/FullR/pump-dashboard.git
   cd pump-dashboard
   git checkout rewrite-sep-2016
   npm i
@@ -42,14 +36,13 @@ setupPumpController() {
 
   # create start script
   echo "#!/bin/bash" > start
-  echo "cd pump-dashboard" >> start
-  echo "npm run start" >> start
+  echo "node pump-dashboard/server" >> start
   chmod +x start
 }
 
-assertRoot
+#assertRoot
 enableRootSSH
-apt-get update
+sudo apt-get update
 promptTimezone
 installNode
 installPostgre
